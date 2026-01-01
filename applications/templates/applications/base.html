@@ -1,0 +1,30 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JobTracker</title>
+
+    <!-- Tailwind CSS -->
+    {% tailwind_css %}
+</head>
+
+<body class="bg-base-500 min-h-screen">
+
+    <!-- Navbar -->
+    <div class="navbar bg-base-100 shadow-md px-6">
+        <div class="flex-1">
+            <a class="btn btn-ghost text-xl">JobTrackr</a>
+        </div>
+        <div class="flex-none">
+            <a class="btn btn-primary btn-sm">Login</a>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <main class="p-6">
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>
