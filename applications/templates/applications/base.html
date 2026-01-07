@@ -17,14 +17,39 @@
             <a class="btn btn-ghost text-xl">JobTrackr</a>
         </div>
         <div class="flex-none">
-            <a class="btn btn-primary btn-sm">Login</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="btn btn-outline btn-sm">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary btn-sm">Login</a>
+            {% endif %}
         </div>
     </div>
+
+    {% if messages %}
+    <div id="toast-container" class="fixed top-4 right-4 space-y-2 z-50">
+        {% for message in messages %}
+        <div class="flex items-center justify-between px-4 py-2 rounded-lg shadow-md
+                    {% if message.tags == 'error' %}bg-red-500 text-white{% endif %}
+                    {% if message.tags == 'success' %}bg-green-500 text-white{% endif %}
+                    {% if message.tags == 'warning' %}bg-yellow-500 text-black{% endif %}
+                    {% if message.tags == 'info' %}bg-blue-500 text-white{% endif %}">
+            <span>{{ message }}</span>
+            <button onclick="this.parentElement.remove()" class="ml-4 font-bold">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <!-- Main content -->
     <main class="p-6">
         {% block content %}{% endblock %}
     </main>
+
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('#toast-container > div').forEach(el => el.remove());
+        }, 4000)
+    </script>
 
 </body>
 </html>

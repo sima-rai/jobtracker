@@ -1,0 +1,28 @@
+{% extends 'applications/base.html'%}
+{% block content %}
+
+<div class="max-w-md mx-auto mt-12">
+    <div class="card bg-base-100 shadow-lg p-6">
+
+        <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+
+            <input type="text" name="username" placeholder="Username"
+                   class="input input-bordered w-full" required>
+
+            <input type="password" name="password" placeholder="Password"
+                   class="input input-bordered w-full" required>
+
+            <button class="btn btn-primary w-full">Login</button>
+        </form>
+
+        <p class="text-sm text-center mt-4">
+            Don’t have an account?
+            <a href="{% url 'signup' %}" class="link link-primary">Sign up</a>
+        </p>
+    </div>
+</div>
+
+{% endblock %}
