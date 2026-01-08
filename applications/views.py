@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .models import JobApplications
 # Create your views here.
 
 
@@ -18,7 +19,12 @@ def home(request):
 
 @login_required
 def dashboard_view(request):
-    return render(request, 'applications/dashboard.html')
+    user = request.user
+
+    jobs = JobApplications.objects.filter(user=user)
+
+
+    return render(request, 'applications/dashboard.html', {'jobs':jobs})
 
 
 def signup_view(request):

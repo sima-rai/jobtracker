@@ -1,4 +1,77 @@
 {% extends 'applications/base.html'%}
 {% block content %}
-<p>Hi {{ user }}</p>
+
+
+<div class="max-w-7xl mx-auto mt-6 space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div class="card bg-primary text-primary-content shadow-md p-4 text-center">
+            <h3 class="font-bold text-lg">Total Jobs</h3>
+            <p class="text-2xl"> 20</p>
+        </div>
+        <div class="card bg-info text-info-content shadow-md p-4 text-center">
+            <h3 class="font-bold text-lg">Applied Jobs</h3>
+            <p class="text-2xl"> 15</p>
+        </div>
+        <div class="card bg-error text-error-content shadow-md p-4 text-center">
+            <h3 class="font-bold text-lg">Rejected Jobs</h3>
+            <p class="text-2xl"> 10</p>
+        </div>
+        <div class="card bg-warning text-warning-content shadow-md p-4 text-center">
+            <h3 class="font-bold text-lg">Pending Jobs</h3>
+            <p class="text-2xl"> 5</p>
+        </div>
+    </div>
+    <div class="flex justify-between items-center mt-4">
+        <form method="get" class="flex space-x-2">
+            <input type="text" name="search" placeholder="Search by company" class="input input-bordered" >
+            <button class="btn btn-primary">Search</button>
+        </form>
+        <select class="select select-bordered w-40">
+            <option>Group by Status</option>
+            <option>Applied</option>
+            <option>Pending</option>
+            <option>Rejected</option>
+            <option>Interview</option>
+        </select>
+    </div> 
+
+    {% comment %} Job table/ excel like section {% endcomment %}
+    <div class="overflow-x-auto mt-4">
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <td>Applied On</td>
+                    <td>Job</td>
+                    <td>Position</td>
+                    <td>Status</td>
+                    <td>Notes</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>{{job.applied_on}}</td>
+                    <td>{{job.company}}</td>
+                    <td>{{job.position}}</td>
+                    <td>{{job.status}}</td>
+                    <td>{{job.notes}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Track jobs efficiently!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <div>
+        pagination
+    </div>
+
+
+</div>
+
 {% endblock %}
