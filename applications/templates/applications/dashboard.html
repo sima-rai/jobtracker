@@ -37,6 +37,8 @@
 
     {% comment %} Job table/ excel like section {% endcomment %}
     <div class="overflow-x-auto mt-4">
+        <button class=btn btn-outline btn-sm 
+        onclick="document.getElementById('addColumnModal').showModal()">Add Column</button>
         <table class="table table-zebra w-full">
             <thead>
                 <tr>
@@ -65,6 +67,43 @@
         </table>
 
     </div>
+
+    <dialog id="addColumnModal" class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4">Add custom column</h3>
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label>Column Name</label>
+                    <input type="text" name="name" required class="input input-bordered w-full" />
+                </div>
+
+                <div class="mb-4">
+                    <label>Field Type</label>
+                    <select name="field_type", class="select select-border w-full" onchange="toggleOptions(this.value)">
+                        <option value="text">Text</option>
+                        <option value="number">Number</option>
+                        <option value="date">Date</option>
+                        <option value="select">Select</option>
+
+                    </select>
+                </div>
+
+                <div class="modal-action">
+                    <button class="btn btn-primary" type="submit">Add Column</button>
+                    <button class="btn" type="button" onclick="document.getElementById('addColumnModal').close()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+
+
+
+
+
+
 
 
     <div>
