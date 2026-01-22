@@ -4,7 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import JobApplications
+from .models import JobApplications, CustomColumn
+from datetime import date
 # Create your views here.
 
 
@@ -22,9 +23,41 @@ def dashboard_view(request):
     user = request.user
 
     jobs = JobApplications.objects.filter(user=user)
+    columns = CustomColumn.objects.filter(user=user)
 
 
-    return render(request, 'applications/dashboard.html', {'jobs':jobs})
+    return render(request, 'applications/dashboard.html', {'jobs':jobs, 'columns':columns})
+
+
+@login_required
+def add_job(request):
+    if request.method == 'POST':
+        JobApplications.objects.create(
+            user=request.user,
+            company=request.POST.get('company'),
+            position=request.POST.get('position'),
+            status=request.POST.get('status'),
+            notes=request.POST.get('notes'),
+            applied_on=request.POST.get('applied_on') or date.today(),
+        )
+    
+    return redirect('dashboard')
+
+
+
+@login_required
+def add_custom_column(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        field_type = request.POST.get('field_type')
+
+        CustomColumn.objects.create(
+            user = request.user,
+            name = name,
+            field_type = field_type,
+        )
+        return redirect('dashboard')
+
 
 
 def signup_view(request):

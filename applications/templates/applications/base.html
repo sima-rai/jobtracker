@@ -43,13 +43,14 @@
     <!-- Main content -->
     <main class="p-6">
         {% block content %}{% endblock %}
+        {% block scripts %}{% endblock %}
+
+        <script>
+            setTimeout(() => {
+                document.querySelectorAll('#toast-container > div').forEach(el => el.remove());
+            }, 4000)
+    
+        </script>
     </main>
-
-    <script>
-        setTimeout(() => {
-            document.querySelectorAll('#toast-container > div').forEach(el => el.remove());
-        }, 4000)
-    </script>
-
 </body>
 </html>

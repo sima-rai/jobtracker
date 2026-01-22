@@ -39,15 +39,18 @@
     <div class="overflow-x-auto mt-4">
         <button class=btn btn-outline btn-sm 
         onclick="document.getElementById('addColumnModal').showModal()">Add Column</button>
-        <table class="table table-zebra w-full">
+        <table class="table table-zebra w-full min-w-max">
             <thead>
-                <tr>
-                    <td>Applied On</td>
-                    <td>Job</td>
-                    <td>Position</td>
-                    <td>Status</td>
-                    <td>Notes</td>
-                </tr>
+                <th>Applied On</th>
+                <th>Job</th>
+                <th>Position</th>
+                <th>Status</th>
+                <th>Notes</th>
+                {% for column in columns %}
+                    <th class="whitespace-nowrap">
+                        {{ column.name }}
+                    </th>
+                {% endfor %}
             </thead>
             <tbody>
                 {% for job in jobs %}
@@ -57,21 +60,50 @@
                     <td>{{job.position}}</td>
                     <td>{{job.status}}</td>
                     <td>{{job.notes}}</td>
+                    {% for column in columns %}
+                    <td class="text-gray-400">—</td>
+                    {% endfor %}
                 </tr>
                 {% empty %}
                 <tr>
                     <td colspan="5" class="text-center">Track jobs efficiently!</td>
                 </tr>
                 {% endfor %}
+                <tr id="addJobRow" class="hidden bg-base-200">
+                    <form method="post" action={% url 'add_job' %}>
+                        {% csrf_token %}
+                        <td><input type="date" name="applied_on" value="{{ today|default:'' }}" class="input input-bordered input-sm"/></td>
+                        <td><input type="text" name="company" class="input input-bordered input-sm" placeholder="Company" required/></td>
+                        <td><input type="text" name="position" class="input input-bordered input-sm" placeholder="Position" required/></td>
+                        <td>
+                            <select name="status" class="select select-bordered select-sm">
+                                <option value="Applied">Applied</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Interview">Interview</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="notes" class="input input-bordered input-sm" placeholder="Notes" required /></td>
+                        {% for column in columns %}
+                        <td class="text-gray-400"><input class="input input-bordered input-sm"/></td>
+                        {% endfor %}
+                        <td><button class="btn btn-primary btn-sm" type="submit">Save</button></td>
+                        <td><button class="btn btn-outline btn-sm" type="button"  onclick="document.getElementById('addJobRow').classList.add('hidden')">Cancel</button></td>
+
+                    </form>
+                </tr>
             </tbody>
         </table>
+        <div class="mt-4 mb-4">
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('addJobRow').classList.remove('hidden')">+ Add Job</button>
+        </div>
 
     </div>
 
     <dialog id="addColumnModal" class="modal">
         <div class="modal-box">
             <h3 class="font-bold text-lg mb-4">Add custom column</h3>
-            <form method="post">
+            <form method="post" action="{% url 'add_custom_column' %}">
                 {% csrf_token %}
 
                 <div class="mb-4">
@@ -113,4 +145,21 @@
 
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+function cancelAddJob() {
+    const row = document.getElementById("addJobRow");
+    if (!row) return;
+
+    row.classList.add("hidden");
+
+    row.querySelectorAll("input, select").forEach(el => {
+        if (el.type !== "hidden") {
+            el.value = "";
+        }
+    });
+}
+</script>
 {% endblock %}
