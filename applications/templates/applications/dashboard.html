@@ -46,23 +46,99 @@
                 <th>Position</th>
                 <th>Status</th>
                 <th>Notes</th>
-                {% for column in columns %}
+                <th class="text-right">Actions</th>
+
+                {% comment %} {% for column in columns %}
                     <th class="whitespace-nowrap">
                         {{ column.name }}
                     </th>
-                {% endfor %}
+                {% endfor %} {% endcomment %}
             </thead>
             <tbody>
                 {% for job in jobs %}
-                <tr>
-                    <td>{{job.applied_on}}</td>
-                    <td>{{job.company}}</td>
+                <tr class="group relative hover:bg-base-200 transition">
+                    <td>
+                        <span class="display">{{job.applied_on|date:'Y-m-d'}}</span>
+                        <input type="date" name="applied_on" class="input input-bordered input-sm edit-field hidden"  value="{{job.applied_on|date:'Y-m-d'}}"/>
+                    </td>
+                    <td>
+                        <span class="display">{{job.company}}</span>
+                        <input type="text" name="company" class="input input-bordered input-sm edit-field hidden"  value="{{job.company}}"/>
+                    </td> <td>
+                        <span class="display">{{job.position}}</span>
+                        <input type="text" name="position" class="input input-bordered input-sm edit-field hidden"  value="{{job.position}}"/>
+                    </td> <td>
+                        <span class="display">{{job.status}}</span>
+                        <select name="status" class="select select-bordered select-sm edit-field hidden">
+                            <option value="Applied" {% if job.status == 'Applied' %}selected{% endif %}>Applied</option>
+                            <option value="Pending" {% if job.status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Interview" {% if job.status == 'Interview' %}selected{% endif %}>Interview</option>
+                            <option value="Rejected" {% if job.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                    </td> 
+                    <td>
+                        <span class="display">{{job.notes}}</span>
+                        <input type="text" name="notes" class="input input-bordered input-sm edit-field hidden"  value="{{job.notes}}"/>
+                    </td>
+                    {% comment %} <td>{{job.company}}</td>
                     <td>{{job.position}}</td>
                     <td>{{job.status}}</td>
-                    <td>{{job.notes}}</td>
-                    {% for column in columns %}
+                    <td>{{job.notes}}</td> {% endcomment %}
+
+
+
+                    {% comment %} {% for column in columns %}
                     <td class="text-gray-400">—</td>
-                    {% endfor %}
+                    {% endfor %} {% endcomment %}
+                    <td class="relative">
+                        <div class="edit-delete-buttons absolute right-2 top-1/2 -translate-y-1/2
+                            flex gap-2
+                            opacity-0 translate-x-4
+                            group-hover:opacity-100 group-hover:translate-x-0
+                            transition-all duration-200">
+                            <button 
+                                class="btn btn-xs btn-ghost text-info"
+                                onclick="editJob(this)"
+                                title="Edit"
+                                >
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-4 w-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5h2m2 0h3a1 1 0 011 1v3m-2-2L7 17l-4 1 1-4 10-10z" />
+                                </svg>
+                            </button>
+
+                            <button
+                                class="btn btn-xs btn-ghost text-error"
+                                onclick="deleteJob({{ job.id }})"
+                                title="Delete"
+                                >
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-4 w-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 7h12M9 7V4h6v3m-7 3v8m4-8v8m4-8v8M5 7h14" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="save-cancel-buttons absolute right-2 top-1/2 -translate-y-1/2
+                            flex gap-2 hidden">
+
+                            <button class="btn btn-xs btn-primary save-btn" onclick="saveJob({{ job.id }}, this)">
+                                Save
+                            </button>
+
+                            <button class="btn btn-xs btn-outline cancel-btn" onclick="cancelEdit(this)">
+                                Cancel
+                            </button>
+                        </div>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -149,6 +225,8 @@
 
 {% block scripts %}
 <script>
+
+
 function cancelAddJob() {
     const row = document.getElementById("addJobRow");
     if (!row) return;
@@ -161,5 +239,104 @@ function cancelAddJob() {
         }
     });
 }
+
+
+function editJob(button){
+    const tr = button.closest("tr");
+    const displayEls = tr.querySelectorAll(".display");
+    const editEls = tr.querySelectorAll(".edit-field");
+
+    debugger;
+
+
+    displayEls.forEach(el => el.classList.add("hidden"));
+    editEls.forEach(el => el.classList.remove("hidden"));
+
+    tr.querySelector(".edit-delete-buttons").classList.add("hidden");
+    tr.querySelector(".save-cancel-buttons").classList.remove("hidden");
+
+}
+
+
+function getCSRFToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+
+
+
+function saveJob(jobId, button){
+    const tr = button.closest("tr");
+
+    const data = {
+        applied_on: tr.querySelector('input[name="applied_on"]').value,
+        company: tr.querySelector('input[name="company"]').value,
+        position: tr.querySelector('input[name="position"]').value,
+        status: tr.querySelector('select[name="status"]').value,
+        notes: tr.querySelector('input[name="notes"]').value,
+    }
+    
+
+    fetch(`/jobs/${jobId}/update/`, {
+        method: "POST",
+        headers:{
+            "X-CSRFToken":getCSRFToken(),
+            "Content-Type":"application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(data),
+    })
+    .then(res=>res.json())
+    .then(res=>{
+
+        if (!res.success) return;
+
+
+        tr.querySelectorAll(".display")[0].textContent = res.job.applied_on;
+        tr.querySelectorAll(".display")[1].textContent = res.job.company;
+        tr.querySelectorAll(".display")[2].textContent = res.job.position;
+        tr.querySelectorAll(".display")[3].textContent = res.job.status;
+        tr.querySelectorAll(".display")[4].textContent = res.job.notes;
+
+
+        tr.querySelectorAll(".display").forEach(el => el.classList.remove("hidden"));
+        tr.querySelectorAll(".edit-field").forEach(el => el.classList.add("hidden"));
+
+        tr.querySelector(".save-cancel-buttons").classList.add("hidden");
+        tr.querySelector(".edit-delete-buttons").classList.remove("hidden");
+
+
+
+    })
+
+
+}
+
+
+function cancelEdit(button){
+    const tr = button.closest("tr")
+    const displayEls = tr.querySelectorAll(".display");
+    const editEls = tr.querySelectorAll(".edit-field");
+
+
+    displayEls.forEach(el => el.classList.remove("hidden"));
+    editEls.forEach(el => el.classList.add("hidden"));
+
+
+    tr.querySelector(".save-cancel-buttons").classList.add("hidden");
+    tr.querySelector(".edit-delete-buttons").classList.remove("hidden");
+
+
+
+
+   
+}
+
+function deleteJob(jobId){
+    console.log(jobId)
+}
+
+
+
+
 </script>
 {% endblock %}

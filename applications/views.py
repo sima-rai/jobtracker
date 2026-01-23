@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from .models import JobApplications, CustomColumn
 from datetime import date
+from django.shortcuts import get_object_or_404
 # Create your views here.
 
 
@@ -42,6 +44,36 @@ def add_job(request):
         )
     
     return redirect('dashboard')
+
+
+
+@login_required
+@require_POST
+def update_job(request, job_id):
+    job = get_object_or_404(JobApplications, id=job_id, user=request.user)
+    job.applied_on = request.POST.get("applied_on")
+    job.company = request.POST.get("company")
+    job.position = request.POST.get("position")
+    job.status = request.POST.get("status")
+    job.notes = request.POST.get("notes")
+
+    job.save()
+
+
+
+    return JsonResponse({
+        "success":True,
+        "job":{
+            "applied_on": job.applied_on,
+            "company": job.company,
+            "position": job.position,
+            "status": job.status,
+            "notes": job.notes,
+        }
+    })
+
+
+
 
 
 
