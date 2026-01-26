@@ -23,7 +23,7 @@
     </div>
     <div class="flex justify-between items-center mt-4">
         <form method="get" class="flex space-x-2">
-            <input type="text" name="search" placeholder="Search by company" class="input input-bordered" >
+            <input type="text" name="search" placeholder="Search by company, position, status..." class="input input-bordered" value="{{ search_query }}">
             <button class="btn btn-primary">Search</button>
         </form>
         <select class="select select-bordered w-40">
@@ -212,7 +212,7 @@
     
             {% if jobs.has_previous %}
                 <a class="join-item btn btn-sm"
-                   href="?page={{ jobs.previous_page_number }}">
+                href="?search={{ search_query }}&page={{ jobs.previous_page_number }}">
                     «
                 </a>
             {% else %}
@@ -225,7 +225,7 @@
     
             {% if jobs.has_next %}
                 <a class="join-item btn btn-sm"
-                   href="?page={{ jobs.next_page_number }}">
+                href="?search={{ search_query }}&page={{ jobs.next_page_number }}">
                     »
                 </a>
             {% else %}

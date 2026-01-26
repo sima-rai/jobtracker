@@ -9,6 +9,7 @@ from .models import JobApplications, CustomColumn
 from datetime import date
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
+from django.db.models import Q
 # Create your views here.
 
 
@@ -24,15 +25,30 @@ def home(request):
 @login_required
 def dashboard_view(request):
     user = request.user
+    query = request.GET.get("search", "").strip()
 
-    jobs = JobApplications.objects.filter(user=user).order_by("-created_at")
+    jobs = JobApplications.objects.filter(user=user)
+    if query:
+        jobs = jobs.filter(
+            Q(company__icontains=query) |
+            Q(position__icontains=query) |
+            Q(notes__icontains=query) |
+            Q(status__icontains=query)|
+            Q(applied_on__icontains=query)
+
+        )
+    jobs = jobs.order_by("-created_at")
+
+
+
+
     columns = CustomColumn.objects.filter(user=user)
 
     paginator = Paginator(jobs, 10)
     page_number = request.GET.get("page")
     jobs = paginator.get_page(page_number)
 
-    return render(request, 'applications/dashboard.html', {'jobs':jobs, 'columns':columns})
+    return render(request, 'applications/dashboard.html', {'jobs':jobs, 'columns':columns, 'search_query':query})
 
 
 @login_required
