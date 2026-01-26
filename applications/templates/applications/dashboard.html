@@ -56,7 +56,7 @@
             </thead>
             <tbody>
                 {% for job in jobs %}
-                <tr class="group relative hover:bg-base-200 transition">
+                <tr data-job-id="{{job.id}}" class="group relative hover:bg-base-200 transition">
                     <td>
                         <span class="display">{{job.applied_on|date:'Y-m-d'}}</span>
                         <input type="date" name="applied_on" class="input input-bordered input-sm edit-field hidden"  value="{{job.applied_on|date:'Y-m-d'}}"/>
@@ -100,6 +100,7 @@
                                 class="btn btn-xs btn-ghost text-info"
                                 onclick="editJob(this)"
                                 title="Edit"
+                                type="submit"
                                 >
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                     class="h-4 w-4"
@@ -246,7 +247,6 @@ function editJob(button){
     const displayEls = tr.querySelectorAll(".display");
     const editEls = tr.querySelectorAll(".edit-field");
 
-    debugger;
 
 
     displayEls.forEach(el => el.classList.add("hidden"));
@@ -255,8 +255,30 @@ function editJob(button){
     tr.querySelector(".edit-delete-buttons").classList.add("hidden");
     tr.querySelector(".save-cancel-buttons").classList.remove("hidden");
 
+
+
+    editEls.forEach(el => {
+            el.addEventListener("keydown", handleEditKeyDown)
+    })
+
+
+    if (editEls.length > 0) {
+        editEls[0].focus();
+    }
+
 }
 
+
+function handleEditKeyDown(event){
+    const tr = event.target.closest("tr");
+    const jobId = tr.dataset.jobId;
+
+    if (event.key === 'Enter'){
+        event.preventDefault();
+        saveJob(jobId, tr)
+    }
+
+}
 
 function getCSRFToken() {
     return document.querySelector('[name=csrfmiddlewaretoken]').value;
