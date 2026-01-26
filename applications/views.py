@@ -8,6 +8,7 @@ from django.contrib import messages
 from .models import JobApplications, CustomColumn
 from datetime import date
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
 # Create your views here.
 
 
@@ -24,9 +25,12 @@ def home(request):
 def dashboard_view(request):
     user = request.user
 
-    jobs = JobApplications.objects.filter(user=user)
+    jobs = JobApplications.objects.filter(user=user).order_by("-created_at")
     columns = CustomColumn.objects.filter(user=user)
 
+    paginator = Paginator(jobs, 10)
+    page_number = request.GET.get("page")
+    jobs = paginator.get_page(page_number)
 
     return render(request, 'applications/dashboard.html', {'jobs':jobs, 'columns':columns})
 
