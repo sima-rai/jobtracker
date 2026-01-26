@@ -72,7 +72,12 @@ def update_job(request, job_id):
         }
     })
 
-
+@login_required
+@require_POST
+def delete_job(request, job_id):
+    job = get_object_or_404(JobApplications, id=job_id, user=request.user)
+    job.delete()
+    return JsonResponse({"success":True})
 
 
 

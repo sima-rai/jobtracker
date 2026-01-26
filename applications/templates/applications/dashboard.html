@@ -100,7 +100,6 @@
                                 class="btn btn-xs btn-ghost text-info"
                                 onclick="editJob(this)"
                                 title="Edit"
-                                type="submit"
                                 >
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                     class="h-4 w-4"
@@ -114,7 +113,7 @@
 
                             <button
                                 class="btn btn-xs btn-ghost text-error"
-                                onclick="deleteJob({{ job.id }})"
+                                onclick="deleteJob({{ job.id }}, this)"
                                 title="Delete"
                                 >
                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -353,8 +352,30 @@ function cancelEdit(button){
    
 }
 
-function deleteJob(jobId){
-    console.log(jobId)
+function deleteJob(jobId, button){
+    {% comment %} if (!confirm("Are you sure you want to delete this job?")){
+        return;
+    } {% endcomment %}
+
+    const tr = button.closest("tr");
+    
+    fetch(`/jobs/${jobId}/delete/`, {
+        method: "POST",
+        headers:{
+            "X-CSRFToken":getCSRFToken(),
+            "Content-Type":"application/x-www-form-urlencoded",
+        },
+    })
+    .then(res=>res.json())
+    .then(data =>{
+        if (data.success){
+            tr.classList.add("opacity-0");
+            setTimeout(() => tr.remove(), 200);
+        }
+    })
+    .catch(err =>{
+        console.error("Delete failed", err);
+    });
 }
 
 
