@@ -45,13 +45,13 @@
             </div>
             <button class="btn btn-primary">Search</button>
         </form>
-        <select class="select select-bordered w-40">
+        {% comment %} <select class="select select-bordered w-40">
             <option>Group by Status</option>
             <option>Applied</option>
             <option>Pending</option>
             <option>Rejected</option>
             <option>Interview</option>
-        </select>
+        </select> {% endcomment %}
     </div> 
 
     {% comment %} Job table/ excel like section {% endcomment %}
@@ -167,7 +167,7 @@
                 <tr id="addJobRow" class="hidden bg-base-200">
                     <form method="post" action={% url 'add_job' %}>
                         {% csrf_token %}
-                        <td><input type="date" name="applied_on" value="{{ today|default:'' }}" class="input input-bordered input-sm"/></td>
+                        <td><input type="date" name="applied_on" value="{% now 'Y-m-d' %}" class="input input-bordered input-sm"/></td>
                         <td><input type="text" name="company" class="input input-bordered input-sm" placeholder="Company" required/></td>
                         <td><input type="text" name="position" class="input input-bordered input-sm" placeholder="Position" required/></td>
                         <td>
