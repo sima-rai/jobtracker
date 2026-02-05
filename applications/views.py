@@ -20,6 +20,8 @@ def hello_world(self):
 
 
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
     return render(request, 'applications/home.html')
 
 @login_required
