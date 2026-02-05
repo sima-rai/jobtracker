@@ -4,22 +4,30 @@
 
 <div class="max-w-7xl mx-auto mt-6 space-y-6">
     <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div class="card bg-primary text-primary-content shadow-md p-4 text-center">
-            <h3 class="font-bold text-lg">Total Jobs</h3>
-            <p class="text-2xl"> 20</p>
-        </div>
-        <div class="card bg-info text-info-content shadow-md p-4 text-center">
-            <h3 class="font-bold text-lg">Applied Jobs</h3>
-            <p class="text-2xl"> 15</p>
-        </div>
-        <div class="card bg-error text-error-content shadow-md p-4 text-center">
-            <h3 class="font-bold text-lg">Rejected Jobs</h3>
-            <p class="text-2xl"> 10</p>
-        </div>
-        <div class="card bg-warning text-warning-content shadow-md p-4 text-center">
-            <h3 class="font-bold text-lg">Pending Jobs</h3>
-            <p class="text-2xl"> 5</p>
-        </div>
+        <a href="?filter=all&search={{search_query}}">
+            <div class="card bg-primary text-primary-content shadow-md p-4 text-center {% if not filter_status or filter_status == 'all' %}ring ring-2 ring-primary ring-offset-2{% endif %}" >
+                <h3 class="font-bold text-lg">Total Jobs</h3>
+                <p class="text-2xl"> {{ metrics.jobs_total }}</p>
+            </div>
+        </a>
+        <a href="?filter=Applied&search={{search_query}}">
+            <div class="card bg-info text-info-content shadow-md p-4 text-center {% if filter_status == 'Applied' %}ring ring-2 ring-info ring-offset-2{% endif %}">
+                <h3 class="font-bold text-lg">Applied Jobs</h3>
+                <p class="text-2xl">{{ metrics.jobs_applied }}</p>
+            </div>
+        </a>
+        <a href="?filter=Rejected&search={{search_query}}">
+            <div class="card bg-error text-error-content shadow-md p-4 text-center {% if filter_status == 'Rejected' %}ring ring-2 ring-error ring-offset-2{% endif %}">  
+                <h3 class="font-bold text-lg">Rejected Jobs</h3>
+                <p class="text-2xl"> {{ metrics.jobs_rejected }}</p>
+            </div>
+        </a>
+        <a href="?filter=Pending&search={{search_query}}">
+            <div class="card bg-warning text-warning-content shadow-md p-4 text-center {% if filter_status == 'Pending' %}ring ring-2 ring-warning ring-offset-2{% endif %}">
+                <h3 class="font-bold text-lg">Pending Jobs</h3>
+                <p class="text-2xl"> {{ metrics.jobs_pending }}</p>
+            </div>
+        </a>
     </div>
     <div class="flex justify-between items-center mt-4">
         <form method="get" class="flex space-x-2">
@@ -212,7 +220,7 @@
     
             {% if jobs.has_previous %}
                 <a class="join-item btn btn-sm"
-                href="?search={{ search_query }}&page={{ jobs.previous_page_number }}">
+                href="?filter={{filter_status}}&search={{ search_query }}&page={{ jobs.previous_page_number }}">
                     «
                 </a>
             {% else %}
@@ -225,7 +233,7 @@
     
             {% if jobs.has_next %}
                 <a class="join-item btn btn-sm"
-                href="?search={{ search_query }}&page={{ jobs.next_page_number }}">
+                href="?filter={{filter_status}}&search={{ search_query }}&page={{ jobs.next_page_number }}">
                     »
                 </a>
             {% else %}
@@ -242,6 +250,7 @@
 {% endblock %}
 
 {% block scripts %}
+
 <script>
 
 
