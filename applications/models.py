@@ -22,6 +22,7 @@ FIELD_TYPES = [
 class JobApplications(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     company = models.CharField(max_length=255)
+    url_link = models.URLField(blank=True, null=True)
     position = models.CharField(max_length=255)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Applied' )
     notes = models.TextField(blank=True)

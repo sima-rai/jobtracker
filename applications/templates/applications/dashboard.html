@@ -62,6 +62,7 @@
             <thead>
                 <th>Applied On</th>
                 <th>Job</th>
+                <th>Link</th>
                 <th>Position</th>
                 <th>Status</th>
                 <th>Notes</th>
@@ -83,7 +84,12 @@
                     <td>
                         <span class="display">{{job.company}}</span>
                         <input type="text" name="company" class="input input-bordered input-sm edit-field hidden"  value="{{job.company}}"/>
-                    </td> <td>
+                    </td> 
+                    <td>
+                        <a class="display underline text-blue-600 hover:text-white" href="{{job.url_link}}" target="new">Link</a>
+                        <input type="text" name="url_link" class="input input-bordered input-sm edit-field hidden"  value="{{job.url_link}}"/>
+                    </td> 
+                    <td>
                         <span class="display">{{job.position}}</span>
                         <input type="text" name="position" class="input input-bordered input-sm edit-field hidden"  value="{{job.position}}"/>
                     </td> <td>
@@ -169,6 +175,7 @@
                         {% csrf_token %}
                         <td><input type="date" name="applied_on" value="{% now 'Y-m-d' %}" class="input input-bordered input-sm"/></td>
                         <td><input type="text" name="company" class="input input-bordered input-sm" placeholder="Company" required/></td>
+                        <td><input type="text" name="url_link" class="input input-bordered input-sm" placeholder="Company" /></td>
                         <td><input type="text" name="position" class="input input-bordered input-sm" placeholder="Position" required/></td>
                         <td>
                             <select name="status" class="select select-bordered select-sm">
@@ -179,9 +186,9 @@
                             </select>
                         </td>
                         <td><input type="text" name="notes" class="input input-bordered input-sm" placeholder="Notes" required /></td>
-                        {% for column in columns %}
+                        {% comment %} {% for column in columns %}
                         <td class="text-gray-400"><input class="input input-bordered input-sm"/></td>
-                        {% endfor %}
+                        {% endfor %} {% endcomment %}
                         <td><button class="btn btn-primary btn-sm" type="submit">Save</button></td>
                         <td><button class="btn btn-outline btn-sm" type="button"  onclick="document.getElementById('addJobRow').classList.add('hidden')">Cancel</button></td>
 
@@ -330,6 +337,7 @@ function saveJob(jobId, button){
     const data = {
         applied_on: tr.querySelector('input[name="applied_on"]').value,
         company: tr.querySelector('input[name="company"]').value,
+        url_link: tr.querySelector('input[name="url_link"]').value,
         position: tr.querySelector('input[name="position"]').value,
         status: tr.querySelector('select[name="status"]').value,
         notes: tr.querySelector('input[name="notes"]').value,
@@ -352,14 +360,12 @@ function saveJob(jobId, button){
 
         tr.querySelectorAll(".display")[0].textContent = res.job.applied_on;
         tr.querySelectorAll(".display")[1].textContent = res.job.company;
-        tr.querySelectorAll(".display")[2].textContent = res.job.position;
-        tr.querySelectorAll(".display")[3].textContent = res.job.status;
-        tr.querySelectorAll(".display")[4].textContent = res.job.notes;
-
-
+        {% comment %} tr.querySelectorAll(".display")[2].textContent = res.job.url_link; {% endcomment %}
+        tr.querySelectorAll(".display")[3].textContent = res.job.position;
+        tr.querySelectorAll(".display")[4].textContent = res.job.status;
+        tr.querySelectorAll(".display")[5].textContent = res.job.notes;
         tr.querySelectorAll(".display").forEach(el => el.classList.remove("hidden"));
         tr.querySelectorAll(".edit-field").forEach(el => el.classList.add("hidden"));
-
         tr.querySelector(".save-cancel-buttons").classList.add("hidden");
         tr.querySelector(".edit-delete-buttons").classList.remove("hidden");
 

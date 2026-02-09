@@ -77,6 +77,7 @@ def add_job(request):
         JobApplications.objects.create(
             user=request.user,
             company=request.POST.get('company'),
+            url_link=request.POST.get('url_link'),
             position=request.POST.get('position'),
             status=request.POST.get('status'),
             notes=request.POST.get('notes'),
@@ -93,6 +94,7 @@ def update_job(request, job_id):
     job = get_object_or_404(JobApplications, id=job_id, user=request.user)
     job.applied_on = request.POST.get("applied_on")
     job.company = request.POST.get("company")
+    job.url_link = request.POST.get("url_link")
     job.position = request.POST.get("position")
     job.status = request.POST.get("status")
     job.notes = request.POST.get("notes")
@@ -106,6 +108,7 @@ def update_job(request, job_id):
         "job":{
             "applied_on": job.applied_on,
             "company": job.company,
+            "url_link": job.url_link,
             "position": job.position,
             "status": job.status,
             "notes": job.notes,
