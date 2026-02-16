@@ -1,0 +1,123 @@
+{% extends "applications/base.html" %}
+
+{% block content %}
+
+<div class="p-6 max-w-4xl mx-auto">
+
+    <!-- Page Header -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold">User Profile</h1>
+        <p class="text-gray-500">Manage your account information</p>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl mt-6">
+        <div class="card-body">
+            <div class="flex items-center gap-6 border-b pb-6 mb-6">
+
+                <div class="avatar">
+                    <div class="w-20 rounded-full">
+                        <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ request.user.username }}">
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-xl font-semibold">
+                        {{ request.user.username }}
+                    </h2>
+
+                    <p class="text-gray-500">
+                        {{ request.user.email }}
+                    </p>
+                </div>
+
+            </div>
+    
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <!-- Email -->
+                <div>
+                    <label class="label">
+                        <span class="label-text font-medium">Email</span>
+                    </label>
+                    {{ profile_form.email }}
+                    {% for error in profile_form.email.errors %}
+                        <p class="text-error text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+    
+                <!-- Job Preference -->
+                <div>
+                    <label class="label">
+                        <span class="label-text font-medium">Preferred Role</span>
+                    </label>
+                    {{ profile_form.job_preference }}
+                    {% for error in profile_form.job_preference.errors %}
+                        <p class="text-error text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+    
+                <div class="card-actions justify-end mt-4">
+                    <button type="submit" name="profile_submit" class="btn btn-primary">
+                        Save Changes
+                    </button>
+                </div>
+    
+            </form>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl mt-6">
+        <div class="card-body">
+            <h2 class="card-title">Change Password</h2>
+    
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+    
+                <!-- Current Password -->
+                <div>
+                    <label class="label">
+                        <span class="label-text font-medium">Current Password</span>
+                    </label>
+                    {{ password_form.old_password }}
+                    {% for error in password_form.old_password.errors %}
+                        <p class="text-error text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+    
+                <!-- New Password -->
+                <div>
+                    <label class="label">
+                        <span class="label-text font-medium">New Password</span>
+                    </label>
+                    {{ password_form.new_password1 }}
+                    {% for error in password_form.new_password1.errors %}
+                        <p class="text-error text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+    
+                <!-- Confirm Password -->
+                <div>
+                    <label class="label">
+                        <span class="label-text font-medium">Confirm Password</span>
+                    </label>
+                    {{ password_form.new_password2 }}
+                    {% for error in password_form.new_password2.errors %}
+                        <p class="text-error text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+    
+                <div class="card-actions justify-end mt-4">
+                    <button type="submit"
+                            name="password_submit"
+                            class="btn btn-primary">
+                        Update Password
+                    </button>
+                </div>
+    
+            </form>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

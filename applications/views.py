@@ -10,6 +10,10 @@ from datetime import date
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
+from .models import UserProfile
+from .forms import ProfileForm, StyledPasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 # Create your views here.
 
 
@@ -180,3 +184,66 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("home")
+
+
+# def profile_view(request):
+#     return render(request, 'applications/profile.html')
+
+
+
+@login_required
+def profile_view(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+
+        # PROFILE FORM SUBMITTED
+        if "profile_submit" in request.POST:
+            profile_form = ProfileForm(
+                request.POST,
+                instance=profile,
+                user=request.user
+            )
+
+            password_form = PasswordChangeForm(request.user)
+
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, "Profile updated successfully!")
+                return redirect("profile")
+
+        # PASSWORD FORM SUBMITTED
+        elif "password_submit" in request.POST:
+            password_form = PasswordChangeForm(
+                request.user,
+                request.POST
+            )
+
+            profile_form = ProfileForm(
+                instance=profile,
+                user=request.user
+            )
+
+            if password_form.is_valid():
+                user = password_form.save()
+
+                # KEEP USER LOGGED IN
+                update_session_auth_hash(request, user)
+
+                messages.success(request, "Password updated successfully!")
+                return redirect("profile")
+
+    else:
+        profile_form = ProfileForm(
+            instance=profile,
+            user=request.user
+        )
+
+        password_form = StyledPasswordChangeForm(request.user)
+
+    return render(request, "applications/profile.html", {
+        "profile_form": profile_form,
+        "password_form": password_form,
+        "profile": profile
+    })
+
