@@ -1,0 +1,23 @@
+{% extends "applications/base.html" %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-12">
+    <div class="card bg-base-100 shadow-lg p-6 text-center">
+
+        <h2 class="text-2xl font-bold mb-4">Verify Your Email Address</h2>
+        <p class="mb-4 text-gray-700">
+            We have sent a confirmation email.
+            Please check your inbox and click the link to complete your signup.
+        </p>
+        <p class="text-gray-500 text-sm mb-4">
+            If you don’t see the email, check your spam folder.
+        </p>
+
+        <a href="{% url 'account_login' %}" class="btn btn-primary w-full">Back to Login</a>
+        {% comment %} <a href="{% url 'account_email_verification_sent' %}" class="btn btn-outline w-full mt-2">
+            Resend Email
+        </a>  {% endcomment %}
+
+    </div>
+</div>
+{% endblock %}

@@ -14,8 +14,6 @@ from .models import UserProfile
 from .forms import ProfileForm, StyledPasswordChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-# Create your views here.
-
 
 
 def hello_world(self):
@@ -144,25 +142,34 @@ def add_custom_column(request):
 
 
 
-def signup_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+
+# def signup_form_view(request):
+#     # if request.method == 'POST':
+#     #     username = request.POST.get('username')
+#     #     email = request.POST.get('email')
+#     #     password = request.POST.get('password')
         
 
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
-            return redirect("signup")
+#     #     if User.objects.filter(username=username).exists():
+#     #         messages.error(request, "Username already exists")
+#     #         return redirect("signup")
         
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password
-        )
-        login(request, user)
-        return redirect("dashboard")
-    return render(request, 'applications/signup.html')
+
+#         # user = User.objects.create_user(
+#         #     username=username,
+#         #     email=email,
+#         #     password=password
+#         # )
+#         # login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+#         # return redirect("dashboard")
+
+
+#         # email verification
+#     return render(request, 'applications/signup.html')
+
+
+
+
 
 
 def login_view(request):

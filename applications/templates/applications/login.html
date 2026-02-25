@@ -1,6 +1,9 @@
 {% extends 'applications/base.html'%}
+{% load socialaccount %}
 {% block content %}
 
+
+{% comment %} this template including login and signup is not needed. kept only for reference purpose. it follows native django authentication logic {% endcomment %}
 <div class="max-w-md mx-auto mt-12">
     <div class="card bg-base-100 shadow-lg p-6">
 
@@ -18,9 +21,16 @@
             <button class="btn btn-primary w-full">Login</button>
         </form>
 
+        <div class="divider">OR</div>
+
+        <a href="{% provider_login_url 'google' process='login' %}?next=/"
+           class="btn btn-outline w-full">
+           Continue with Google
+        </a>
+
         <p class="text-sm text-center mt-4">
             Don’t have an account?
-            <a href="{% url 'signup' %}" class="link link-primary">Sign up</a>
+            <a href="{% url 'account_signup' %}" class="link link-primary">Sign up</a>
         </p>
     </div>
 </div>
