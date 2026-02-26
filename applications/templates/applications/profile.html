@@ -74,6 +74,7 @@
                 {% csrf_token %}
     
                 <!-- Current Password -->
+                {% if request.user.has_usable_password %}
                 <div>
                     <label class="label">
                         <span class="label-text font-medium">Current Password</span>
@@ -83,6 +84,7 @@
                         <p class="text-error text-sm mt-1">{{ error }}</p>
                     {% endfor %}
                 </div>
+                {% endif %}
     
                 <!-- New Password -->
                 <div>

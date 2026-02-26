@@ -12,7 +12,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from .models import UserProfile
 from .forms import ProfileForm, StyledPasswordChangeForm
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from django.contrib.auth import update_session_auth_hash
 
 
@@ -204,6 +204,9 @@ def profile_view(request):
 
     if request.method == "POST":
 
+        password_form = PasswordChangeForm(request.user,request.POST) if request.user.has_usable_password() else SetPasswordForm(request.user, request.POST)
+
+
         # PROFILE FORM SUBMITTED
         if "profile_submit" in request.POST:
             profile_form = ProfileForm(
@@ -212,7 +215,6 @@ def profile_view(request):
                 user=request.user
             )
 
-            password_form = PasswordChangeForm(request.user)
 
             if profile_form.is_valid():
                 profile_form.save()
@@ -221,10 +223,6 @@ def profile_view(request):
 
         # PASSWORD FORM SUBMITTED
         elif "password_submit" in request.POST:
-            password_form = PasswordChangeForm(
-                request.user,
-                request.POST
-            )
 
             profile_form = ProfileForm(
                 instance=profile,
