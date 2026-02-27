@@ -14,7 +14,7 @@
     <!-- Navbar -->
     <div class="navbar bg-base-100 shadow-md px-6">
         <div class="flex-1">
-            <a class="btn btn-ghost text-xl">JobTrackr</a>
+            <a href="{% url 'home' %}"  class="btn btn-ghost text-xl">JobTrackr</a>
         </div>
         <div class="flex-none">
             {% if user.is_authenticated %}
